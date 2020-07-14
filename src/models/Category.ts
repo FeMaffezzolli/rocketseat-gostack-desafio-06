@@ -1,6 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
-
-import Transaction from './Transaction';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 @Entity('categories')
 class Category {
@@ -10,14 +14,11 @@ class Category {
   @Column()
   title: string;
 
-  @Column('timestamp with time zone', { default: 'now()' })
+  @CreateDateColumn()
   created_at: Date;
 
-  @Column('timestamp with time zone', { default: 'now()' })
+  @UpdateDateColumn()
   updated_at: Date;
-
-  @OneToMany(() => Transaction, transaction => transaction.category)
-  transactions: Transaction[];
 }
 
 export default Category;

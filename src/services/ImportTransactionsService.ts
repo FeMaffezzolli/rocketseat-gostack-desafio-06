@@ -19,23 +19,29 @@ class ImportTransactionsService {
 
     const createTransaction = new CreateTransactionService();
 
-    const transactions: Promise<Transaction[]> = Promise.all(
-      data.map(entry => {
-        const [title, type, value, category] = entry;
+    const transactions = [];
 
-        return createTransaction.execute({
-          title,
-          type,
-          value,
-          category,
-        });
-      }),
-    );
+    // eslint-disable-next-line no-plusplus
+    for (let index = 0; index < data.length; index++) {
+      const [title, type, value, category] = data[index];
+
+      // eslint-disable-next-line no-await-in-loop
+      const transaction = await createTransaction.execute({
+        title,
+        type,
+        value,
+        category,
+      });
+
+      transactions.push(transaction);
+    }
 
     return transactions;
   }
 
-  async loadCSV(filePath: string): any[] {
+  async loadCSV(
+    filePath: string,
+  ): Promise<[string, 'income' | 'outcome', number, string][]> {
     const readCSVStream = fs.createReadStream(filePath);
 
     const parseStream = csvParse({
@@ -46,7 +52,7 @@ class ImportTransactionsService {
 
     const parseCSV = readCSVStream.pipe(parseStream);
 
-    const lines = [];
+    const lines: Array<[string, 'income' | 'outcome', number, string]> = [];
 
     parseCSV.on('data', line => {
       lines.push(line);

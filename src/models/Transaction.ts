@@ -1,4 +1,12 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  JoinColumn,
+  UpdateDateColumn,
+  CreateDateColumn,
+} from 'typeorm';
 
 import Category from './Category';
 
@@ -13,16 +21,17 @@ class Transaction {
   @Column('varchar')
   type: 'income' | 'outcome';
 
-  @Column('numeric')
+  @Column('decimal')
   value: number;
 
-  @ManyToOne(() => Category, category => category.transactions)
-  category: Category;
+  @ManyToOne(() => Category)
+  @JoinColumn({ name: 'category_id', referencedColumnName: 'id' })
+  category_id: Category;
 
-  @Column('timestamp with time zone', { default: 'now()' })
+  @CreateDateColumn()
   created_at: Date;
 
-  @Column('timestamp with time zone', { default: 'now()' })
+  @UpdateDateColumn()
   updated_at: Date;
 }
 
