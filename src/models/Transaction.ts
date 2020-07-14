@@ -13,7 +13,7 @@ class Transaction {
   @Column('varchar')
   type: 'income' | 'outcome';
 
-  @Column('decimal')
+  @Column('numeric')
   value: number;
 
   @ManyToOne(() => Category, category => category.transactions)
